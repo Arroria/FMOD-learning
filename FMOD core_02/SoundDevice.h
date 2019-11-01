@@ -3,6 +3,7 @@
 #include <string_view>
 
 class SoundDevice;
+class SoundSample;
 class SoundChannel
 {
 public:
@@ -33,6 +34,8 @@ public:
 
 	SoundSample& operator=(SoundSample&& soundSample);
 
+	SoundDevice* _get_sound_device() { return m_myDevice; }
+	FMOD::Sound* _get_primitive_sound() { return m_sound; }
 
 	SoundChannel play();
 	void release();
@@ -40,6 +43,9 @@ public:
 private:
 	SoundDevice* m_myDevice;
 	FMOD::Sound* m_sound;
+
+	void _release_unsafe();
+	void _set_null();
 };
 
 class SoundDevice
@@ -53,7 +59,7 @@ public:
 
 	SoundSample CreateSoundSample(std::string_view filePath);
 
-	FMOD::System* _get_fmod_system();
+	FMOD::System* _get_fmod_system() { return m_system; }
 
 private:
 	FMOD::System* m_system;
