@@ -2,6 +2,8 @@
 #include "fmod.hpp"
 #include <string_view>
 
+#define SOUNDDEVICE_SAFETY true
+
 class SoundDevice;
 class SoundSample;
 class SoundChannel
@@ -18,10 +20,25 @@ public:
 	void play();
 	void pause();
 	void stop();
+	void release();
 	void detach();
+
+	bool is_available() const;
+	bool is_playing() const;
+	bool is_paused() const;
+
+	unsigned int get_time() const;
+
 
 private:
 	FMOD::Channel* m_channel;
+
+	FMOD::Sound* _get_primitive();
+
+
+	void _release();
+	void _pause();
+	bool _is_paused() const;
 };
 
 class SoundSample
@@ -34,18 +51,19 @@ public:
 
 	SoundSample& operator=(SoundSample&& soundSample);
 
-	SoundDevice* _get_sound_device() { return m_myDevice; }
+	SoundDevice* _get_device() { return m_device; }
 	FMOD::Sound* _get_primitive_sound() { return m_sound; }
 
 	SoundChannel play();
 	void release();
 
 private:
-	SoundDevice* m_myDevice;
+	SoundDevice* m_device;
 	FMOD::Sound* m_sound;
 
 	void _release_unsafe();
 	void _set_null();
+
 };
 
 class SoundDevice
@@ -59,9 +77,8 @@ public:
 
 	SoundSample CreateSoundSample(std::string_view filePath);
 
-	FMOD::System* _get_fmod_system() { return m_system; }
+	FMOD::System* _get_primitive_system() { return m_system; }
 
 private:
 	FMOD::System* m_system;
 };
-

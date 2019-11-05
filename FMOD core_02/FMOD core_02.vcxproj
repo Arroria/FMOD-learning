@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SoundDevice.cpp" />
+    <ClCompile Include="SoundChannel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SoundDevice.h" />
