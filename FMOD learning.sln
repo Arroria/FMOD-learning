@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FMOD studio_01", "FMOD studio_01\FMOD studio_01.vcxproj", "{C9D480D5-5284-4AA7-AC86-958FBDBE7C23}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sound Visualizer", "Sound Visualizer\Sound Visualizer.vcxproj", "{F17EF179-B890-41B0-AFC1-C55D17892E9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{C9D480D5-5284-4AA7-AC86-958FBDBE7C23}.Release|x64.Build.0 = Release|x64
 		{C9D480D5-5284-4AA7-AC86-958FBDBE7C23}.Release|x86.ActiveCfg = Release|Win32
 		{C9D480D5-5284-4AA7-AC86-958FBDBE7C23}.Release|x86.Build.0 = Release|Win32
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Debug|x64.ActiveCfg = Debug|x64
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Debug|x64.Build.0 = Debug|x64
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Debug|x86.ActiveCfg = Debug|Win32
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Debug|x86.Build.0 = Debug|Win32
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Release|x64.ActiveCfg = Release|x64
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Release|x64.Build.0 = Release|x64
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Release|x86.ActiveCfg = Release|Win32
+		{F17EF179-B890-41B0-AFC1-C55D17892E9E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
