@@ -30,6 +30,11 @@ public:
 	unsigned int get_time() const;
 
 
+	// DSP temp
+	void _addDSP(FMOD::DSP* dsp) { m_channel->addDSP(0, dsp); }
+	void _removeDSP(FMOD::DSP* dsp) { m_channel->removeDSP(dsp); }
+
+
 private:
 	FMOD::Channel* m_channel;
 
