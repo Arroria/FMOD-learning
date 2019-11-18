@@ -1,131 +1,96 @@
-#include <fmod.hpp>
 #define NOMINMAX
 #include <Windows.h>
 #include <iostream>
-// 참고 자료
-// https://www.parallelcube.com/2018/03/10/frequency-spectrum-using-fmod-and-ue4/
+#include <chrono>
 
 
 #include <string_view>
 constexpr std::string_view _path_test[] = 
 { "C:/.Arroria/FMOD Studio API Windows/api/core/examples/media/wave.mp3"
 ,"C:/.Arroria/Visual Studio Project/_2019/Rhythm Game/rhy_03/697873717765.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/bt3tm.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/i.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/over.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/anni.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/ear careful test.mp3"
-,"C:/.Arroria/Visual Studio Project/_2019/FMOD learning/Sound Visualizer/nightmare.mp3"
+,"bt3tm.mp3"
+,"i.mp3"
+,"over.mp3"
+,"anni.mp3"
+,"ear careful test.mp3"
+,"nightmare.mp3"
+,"dest.mp3"
+,"aleph.mp3"
 };
 
 
 #include "ConsoleDoubleBuffer.h"
-
-#include <vector>
-#include <cmath>
-#include <algorithm>
+#include "SoundVisualizer.h"
 
 int main()
 {
+	Sleep(1000);
 	ConsoleDoubleBuffer cdb(300);
-	constexpr int sound_index = 4;
 
-	FMOD::System* sys;
-	FMOD::System_Create(&sys);
-	sys->init(256, 0, nullptr);
+	SoundDevice sd;
+	sd.Initialize();
 
-	FMOD::Sound* sound;
-	auto error = sys->createSound(_path_test[sound_index].data(), FMOD_LOOP_OFF, nullptr, &sound);
-
+	SoundSample sound(sd, _path_test[3]);
 	{
-		/*
-		윈도 사이즈는 128~16384(2^7 ~ 2^15)범위의 2의 제곱수 값만 사용 가능
-		나중에 반환되는 FFT spectrum의 길이 값과 동일
-
-		*/
+		SoundChannel sc(sound);
+		SoundVisualizer sv;
+		sv.Initialize(sd, &sc, 7, 100);
 
 
+		auto start = std::chrono::steady_clock::now();
 
-		constexpr bool isLinear = false;
-		constexpr bool isCustom = true;
-		constexpr int winS =
-			2 << 13
-			//128
-			//1024
-			//16384
-			;
-		FMOD::Channel* c;
-		sys->playSound(sound, nullptr, false, &c);
-
-		FMOD::DSP* dsp;
-		sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
-		dsp->setParameterInt(FMOD_DSP_FFT_WINDOWTYPE, FMOD_DSP_FFT_WINDOW_RECT);
-		dsp->setParameterInt(FMOD_DSP_FFT_WINDOWSIZE, winS);
-		error = c->addDSP(0, dsp);
-
-
-		const double __fx = std::pow(100, 1.0 / (double)100);
-
-		std::vector<std::pair<int, int>> myBar;
-		auto initBar = [&](int size)->int
+		SoundVisualizer_CalculateType svcType = SoundVisualizer_CalculateType::Average;
+		while (sc.is_available())
 		{
-			const double fx = std::pow(winS, 1.0 / (double)size);
-			double pos = 1;
-			for (int i = 0; i < size; ++i)
-			{
-				double prevPos = pos;
-				pos *= fx;
-				myBar.push_back(std::make_pair((int)prevPos, (int)pos));
-			}
-			return myBar.size();
-		};
-		initBar(100);
-		while (true)
-		{
-			std::vector <float> spectrumData(100);
-			FMOD_DSP_PARAMETER_FFT* fftData = nullptr;
-			dsp->getParameterData(FMOD_DSP_FFT_SPECTRUMDATA, (void**)& fftData, 0, 0, 0);
-			if (fftData && fftData->length / 2 > 0)
-			{
-				for (int index = 0; index < myBar.size(); ++index)
-				{
-					int begin = myBar[index].first;
-					int end = myBar[index].second;
-					int length = end - begin + 1;
-					for (int frec = begin; frec <= end; ++frec)
-					{
-						for (int channel = 0; channel < fftData->numchannels; ++channel)
-							spectrumData[index] = std::max(spectrumData[index], fftData->spectrum[channel][frec]);
-						//spectrumData[index] += fftData->spectrum[channel][frec];
-					}
-					//spectrumData[index] /= (float)(length * fftData->numchannels);
-				}
-			}
+			if (GetAsyncKeyState('1'))	svcType = SoundVisualizer_CalculateType::Average;
+			if (GetAsyncKeyState('2'))	svcType = SoundVisualizer_CalculateType::AverageOffsetting;
+			if (GetAsyncKeyState('3'))	svcType = SoundVisualizer_CalculateType::Maximum;
+			if (GetAsyncKeyState('4'))	svcType = SoundVisualizer_CalculateType::MaximumOffsetting;
+
+			if (GetAsyncKeyState('Q'))	sv.SetOffsetSetting(20);	if (GetAsyncKeyState('A'))	sv.SetOffsetSetting(120);
+			if (GetAsyncKeyState('W'))	sv.SetOffsetSetting(40);	if (GetAsyncKeyState('S'))	sv.SetOffsetSetting(140);
+			if (GetAsyncKeyState('E'))	sv.SetOffsetSetting(60);	if (GetAsyncKeyState('D'))	sv.SetOffsetSetting(160);
+			if (GetAsyncKeyState('R'))	sv.SetOffsetSetting(80);	if (GetAsyncKeyState('F'))	sv.SetOffsetSetting(180);
+			if (GetAsyncKeyState('T'))	sv.SetOffsetSetting(100);	if (GetAsyncKeyState('G'))	sv.SetOffsetSetting(200);
 
 
+			const SoundVisualizer::SpectrumDataBuffer_t& spectrumData = sv.SpectrumDataCalculate(svcType);
+			
+			
 
+
+			constexpr size_t max_y = 63;
+			constexpr size_t render_y = 50;
 			cdb.Clear();
 			cdb.Begin();
 
-			for (size_t i = 0; i < 100; i++)
+			for (size_t i = 0; i < spectrumData.size(); i++)
 			{
-				int length = spectrumData[i] * 50 * 2.5;// *std::pow(__fx, i);
+				int length = spectrumData[i] * render_y
+				*((svcType != SoundVisualizer_CalculateType::AverageOffsetting && svcType != SoundVisualizer_CalculateType::MaximumOffsetting)
+					? 5 :1);
+
 				for (size_t y = 0; y < length; y++)
 				{
-					if (y > 50)
+					if (y > max_y)
 						break;
-					cdb.CursorTo(i * 2, 50 - y);
+					cdb.CursorTo(i * 2, max_y - y);
 					std::cout << "■";
 				}
 			}
 
+			auto end = std::chrono::steady_clock::now();
+			cdb.CursorTo(0, 0);
+			std::cout << (std::chrono::nanoseconds(std::chrono::seconds(1)) / (end-start));
+			start = end;
+
+
 			cdb.End();
 			cdb.Flipping();
-			Sleep(20);
 		}
+		sv.Release();
 	}
-
-	sound->release();
-	sys->release();
+	sound.release();
+	sd.Release();
 	return 0;
 }

@@ -139,11 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\FMOD core_02\SoundChannel.cpp" />
+    <ClCompile Include="..\FMOD core_02\SoundDevice.cpp" />
     <ClCompile Include="ConsoleDoubleBuffer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SoundVisualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\FMOD core_02\SoundDevice.h" />
     <ClInclude Include="ConsoleDoubleBuffer.h" />
+    <ClInclude Include="SoundVisualizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

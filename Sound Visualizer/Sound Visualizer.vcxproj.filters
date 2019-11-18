@@ -3,8 +3,24 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ConsoleDoubleBuffer.cpp" />
+    <ClCompile Include="SoundVisualizer.cpp" />
+    <ClCompile Include="..\FMOD core_02\SoundChannel.cpp">
+      <Filter>__sound_device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FMOD core_02\SoundDevice.cpp">
+      <Filter>__sound_device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleDoubleBuffer.h" />
+    <ClInclude Include="SoundVisualizer.h" />
+    <ClInclude Include="..\FMOD core_02\SoundDevice.h">
+      <Filter>__sound_device</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="__sound_device">
+      <UniqueIdentifier>{2226713a-56e0-46be-9071-3f6e93eeb90b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
