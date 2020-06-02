@@ -42,3 +42,4 @@
 *.lastbuildstate
 *.enc
 .vs/*
+compile/
